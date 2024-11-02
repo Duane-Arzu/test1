@@ -269,9 +269,9 @@ func (m *ReviewModel) Exists(id int64) (bool, error) {
 	return exists, nil
 }
 
-func (c ReviewModel) GetProductReview(rid int64, pid int64) (*Review, error) {
+func (c ReviewModel) GetProductReview(rid int64, id int64) (*Review, error) {
 	//validate id
-	if pid < 1 || rid < 1 {
+	if id < 1 || rid < 1 {
 		return nil, ErrRecordNotFound
 	}
 
@@ -285,7 +285,7 @@ func (c ReviewModel) GetProductReview(rid int64, pid int64) (*Review, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	err := c.DB.QueryRowContext(ctx, query, rid, pid).Scan(
+	err := c.DB.QueryRowContext(ctx, query, rid, id).Scan(
 		&review.ReviewID,
 		&review.ProductID,
 		&review.Author,

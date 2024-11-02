@@ -2,7 +2,7 @@
 package data
 
 import (
-    "context"
+	"context"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -12,15 +12,15 @@ import (
 )
 
 type Product struct {
-    ProductID    int64     `json:"product_id"`
-    Name         string    `json:"name"`
-    Description  string    `json:"description"`
-    Category     string    `json:"category"`
-    ImageURL     string    `json:"image_url"`
-    Price        string    `json:"price"`
-    AvgRating    float64   `json:"avg_rating"`
-    CreatedAt    time.Time `json:"created_at"`
-    Version   int32     `json:"version"`
+	ProductID   int64     `json:"product_id"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	Category    string    `json:"category"`
+	ImageURL    string    `json:"image_url"`
+	Price       string    `json:"price"`
+	AvgRating   float64   `json:"avg_rating"`
+	CreatedAt   time.Time `json:"created_at"`
+	Version     int32     `json:"version"`
 }
 
 // type Review struct {
@@ -35,7 +35,7 @@ type Product struct {
 // }
 
 type ProductModel struct {
-    DB *sql.DB
+	DB *sql.DB
 }
 
 // type ReviewModel struct {
@@ -58,18 +58,17 @@ func ValidateProduct(v *validator.Validator, products *Product) {
 // // Insert Row to comments table
 // // expects a pointer to the actual comment content
 func (p ProductModel) InsertProduct(products *Product) error {
-    //the sql query to be executed against the database table
+	//the sql query to be executed against the database table
 	query := `
 		INSERT INTO products (name, description, category, image_url, price)
 		VALUES ($1, $2, $3, $4, $5)
 		RETURNING product_id, created_at, version
 	`
-    //the actual values to be passed into $1, $2, $3, $4 and $5
+	//the actual values to be passed into $1, $2, $3, $4 and $5
 	args := []any{products.Name, products.Description, products.Category, products.ImageURL, products.Price}
 
-
- 	// Create a context with a 3-second timeout. No database
- 	// operation should take more than 3 seconds or we will quit it
+	// Create a context with a 3-second timeout. No database
+	// operation should take more than 3 seconds or we will quit it
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
@@ -83,11 +82,11 @@ func (p ProductModel) InsertProduct(products *Product) error {
 // get a product from DB based on ID
 func (p ProductModel) GetProduct(id int64) (*Product, error) {
 	//check if the id is valid
-    if id < 1 {
+	if id < 1 {
 		return nil, ErrRecordNotFound
 	}
 
-    //the sql query to be excecuted against the database table
+	//the sql query to be excecuted against the database table
 	query := `
 		SELECT product_id, name, description, category, image_url, price, avg_rating, created_at, version
 		FROM products
@@ -128,7 +127,6 @@ func (p ProductModel) UpdateProduct(products *Product) error {
 		RETURNING version
 	`
 
-	// Removed `product.UpdatedAt` from the args slice
 	args := []any{products.Name, products.Description, products.Category, products.ImageURL, products.Price, products.AvgRating, products.ProductID}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
